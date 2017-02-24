@@ -1,28 +1,25 @@
----
-layout: none
----
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en-US">
-    <title>{{ site.name | xml_escape }}</title>
-    <subtitle type="text">{{ site.description | xml_escape }}</subtitle>
-    <updated>{{ site.time | date_to_xmlschema }}</updated>
-    <link type="application/atom+xml" href="{{ site.url | uri_escape }}/site/feed.xml" rel="self" />
-    <link type="text/html" href="{{ site.url | uri_escape }}" rel="alternate"/>
-    <id>{{ site.url | uri_escape }}/</id>
-    <generator uri="http://jekyllrb.com/">Jekyll</generator>
-    <rights>Copyright (c) {{ site.time | date: "%Y" }} Geert Eltink. All Rights Reserved.</rights>
-    {% for post in site.posts limit:10 %}
-    <entry>
-        <title type="html"><![CDATA[{{ post.title }}]]></title>
-        <link href="{{ site.url | uri_escape }}{{ post.url | uri_escape }}" />
-        <id>{{ site.url | uri_escape }}{{ post.url | uri_escape }}</id>
-        <published>{{ post.date | date_to_xmlschema }}</published>
-        <updated>{{ post.date | date_to_xmlschema }}</updated>
-        <author>
-            <name>Geert Eltink</name>
-            <uri>{{ site.url | uri_escape }}</uri>
-        </author>
-        <summary type="html"><![CDATA[{{ post.summary }}]]></summary>
-    </entry>
-    {% endfor %}
-</feed>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<channel>
+		<title>{{ site.name | xml_escape }}</title>
+		<description>{% if site.description %}{{ site.description | xml_escape }}{% endif %}</description>		
+		<link>{{ site.url }}</link>
+		<atom:link href="{{ site.url }}/{{ page.path }}" rel="self" type="application/rss+xml" />
+		{% for post in site.posts limit:10 %}
+			<item>
+				<title>{{ post.title | xml_escape }}</title>
+				{% if post.author.name %}
+					<dc:creator>{{ post.author.name | xml_escape }}</dc:creator>
+				{% endif %}        
+				{% if post.excerpt %}
+					<description>{{ post.excerpt | xml_escape }}</description>
+				{% else %}
+					<description>{{ post.content | xml_escape }}</description>
+				{% endif %}
+				<pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
+				<link>{{ site.url }}{{ post.url }}</link>
+				<guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
+			</item>
+		{% endfor %}
+	</channel>
+</rss>
